@@ -1,83 +1,126 @@
 $(function() { 
-  
   // Initialize variables
   var $window = $(window);
   var $button = $('button');
   var $searchField = $('input');
-  var $searchButton = $("#search");
-  var $repoList = $(".repoList");
+  var $searchButton = $("#searchBtn");
+  var $favButton = $("#favBtn");
   var $repoTable = $("#repoTable");
-  var $favTable = $("#favTable");
   var $mainPage = $('.main.page');
+  var $searchTab = $('.searchTab');
+  var $favTab = $('.favTab');
+  var $favBody = $('#favBody');
   var reposjson;
-  var enterKey = jQuery.Event("keydown");
-  //enterKey.which = 13; //Enter key
 
+  $favTab.toggle(); 
   $mainPage.show();
+  $searchTab.show();
   $searchField.focus();
-  
-  //Check if input field is empty every second
+
+
+  $favButton.click(function (key) {
+	$favTab.fadeIn("slow");
+  });
+
+  /*Check if input field is empty every second
   setInterval(function(){
 	if (!$searchField.val()){
 		$repoTable.children().remove();
+
 	}
   }
   ,1000);
+  */
 
-  //Remove duplicates from favourites
-  setInterval(function(){
-    $.each($("#favTable tr"), function(i, item) {
-        var currIndex = $("#favTable tr").eq(i);
-        var matchText = currIndex.children("td").first().text();
-        $(this).nextAll().each(function(i, inItem) {
-            if(matchText===$(this).children("td").first().text()) {
-                $(this).remove();
-            }
-        });
+  $(".close").click(function(){
+  	$(this).parent().parent().fadeOut();
+  });
+
+  function SlideUPremove(){ 
+    $(this).slideUp(150, function() {
+        $(this).remove(); 
     });
-  },1000);
+  }
 
-  //Search button functions, click anytime to refresh search
-  $searchButton.click(function(){ 
-	  $(".repotableHead").remove();
-	  $("#repoTable .rows").remove();
-	  $repoTable.append(" <tr class=repotableHead><th>Name</th><th>Language</th> <th>Score</th><th> </th></tr>");
-	  var numEntries = 15;
-	  $.when(
-	    $.getJSON("https://api.github.com/search/repositories?q=" + $searchField.val() + "&sort=stars&order=desc", function(data) {
-		reposjson = data;
-	    })  
-	  ).then(function() {
-	    if (reposjson) {
-	          
-		  for (i = 0; i < numEntries; i++) {
-			$repoTable.append("<tr class='" + "rows" + "'  id='" + i + "'>" +
-						 "<td>" + reposjson.items[i].full_name +"</td>"+
-		                                 "<td>" + reposjson.items[i].language +"</td>"+
-		                                 "<td>"+ reposjson.items[i].score +"</td>"+
-		                                 "<td style=color:blue class=addFav id='" + i + "'><u>" + "Add" +"</u></td>"+
-		                                 "</tr>");
-		  }
-			$(".addFav").click(function(){
-			    var $parentRowID = $("#"+$(this).parents('tr:first').attr('id'));
-			    var tableID = $(this).parents('tr:first').parent().attr('id') + "";
-			    if(tableID === "repoTable"){
+  function main(){
+  	$("#repoTable > .listItem").remove();
+  	$("#repoTable > .dropDownMenu").remove();
+  	$("#backgroundMessage").remove();
 
-				$favTable.append($parentRowID.clone(true, true));
-			    	$("#favTable "+"#"+$(this).parents('tr:first').attr('id')+ " .addFav").html("<u>Remove</u>");
-			    }
-			    else{
-				$("#favTable "+"#"+$(this).parents('tr:first').attr('id')).remove();
-			    }
-
-
+	/*$(".listItem").fadeTo(1000, 0.01, SlideUPremove);
+  	$(".dropDownMenu").fadeTo(1000, 0.01, SlideUPremove);
+  	$("#backgroundMessage").fadeTo(1000, 0.01, SlideUPremove);*/
+		        
+	$.when(
+		$.getJSON("https://api.github.com/search/repositories?q="+$searchField.val()+"&sort=stars&order=desc",    function(data) {
+			reposjson = data;
+		})  
+	).then(function() {
+		if (reposjson) {
+			if(reposjson.items.length === 0){alert("No such repository exists");}
+			for (i = 0; i < reposjson.items.length; i++) {
+				$repoTable.append("<button class=listItem>" + reposjson.items[i].name +"</button>"+
+				                  "<div class=dropDownMenu id='" + i + "' >"+
+						  "<p><b>" + "Description: </b>" + reposjson.items[i].description +"</p>" +
+				                  "<p><b>" + "Language: </b>"+ reposjson.items[i].language +"</p>" +
+				                  "<p><b>" + "Size: </b>" + reposjson.items[i].size +"KB</p>" +
+				                  "<p><b>" + "Number of forks: </b>" + reposjson.items[i].forks +"</p>" +
+				                  "<p><b>" + "Watchers: </b>" + reposjson.items[i].watchers +"</p>" +
+				                  "<p><b>" + "Repository Score: </b>" + reposjson.items[i].score +"</p>" +
+				                  "<p><b>" + "Date created: </b>" + reposjson.items[i].created_at.substring(0,10) +"</p>" +
+				                  "<p><a href=https://github.com/" + reposjson.items[i].full_name +" target=_blank>Visit Repository</a></p><button class=addFav><span class=tooltiptext>Add To Favourites</span></button></div>").hide().fadeIn();
+				$(".addFav").addClass("fas fa-star");
+				$(".addFav").addClass("tooltip");
+			  }
+			$(".listItem").click(function(){
+				$(this).next().toggle("slow");
 			});
 
-	    }
-	    else {
-		console.log("Error JSON file not found");
-	    }
+			$(".addFav").click(function(){
+				var $listItem = $(this).parent().prev();
+				var $itemInfo = $(this).parent();
+				if( $favBody.find($("#"+ $itemInfo.attr('id'))).attr('id')){
+					alert("Already Added");
+				}
+				else{
+					$favBody.append($listItem.clone(true, true));
+					$favBody.append($itemInfo.clone(true, true));
+					$("#favBody #"+ $itemInfo.attr('id')).toggle();
+					$("#favBody #"+ $itemInfo.attr('id') +" .addFav").remove();
+					$("#favBody #"+ $itemInfo.attr('id')).append("<button class=removeFav></button>");
+					$("#favBody .removeFav").addClass("far fa-trash-alt");
+				}
+				/*remove duplicates
+				var currIndex = $(".favTab").eq(i);
+				var matchText = currIndex.children("div").first().text();
+				$(this).nextAll().each(function(i, inItem) {
+				    if(matchText===$(this).children("div").first().text()) {
+					$(this).remove();
+				    }
+				});*/
+
+				$(".removeFav").click(function(){
+					$(this).parent().prev().remove();
+					$(this).parent().remove();
+				});
+			});
+
+			  
+		}
+		else {
+			console.log("Error JSON file not found");
+		}
 	    
 	   });
+
+
+  }
+
+  $searchButton.click(main);
+  $searchField.keypress(function (key) {
+	if (key.which == 13) {
+		main();  
+  	}
   });
+
 });
