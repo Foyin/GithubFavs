@@ -1,4 +1,4 @@
-# Github Search App 2
+# Github Search App
 
 App to find github repositories. You can search for certain repositories using , get information about them and visit them and save them.
 
