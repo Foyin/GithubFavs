@@ -1,6 +1,8 @@
 # Github Search App 2
 
-App to find github repositories with smoother stying. You can search for certain repositories, get information about them and visit them and save them.
+App to find github repositories. You can search for certain repositories using , get information about them and visit them and save them.
+
+The app works by getting JSON files from github through their API and using jquery to develop a responsive UI to access some information.
 
 A demo of the app can be found here [here](https://github-favourites2.herokuapp.com/) 
 
