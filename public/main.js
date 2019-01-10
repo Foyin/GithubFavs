@@ -60,7 +60,7 @@ $(function() {
 			if(reposjson.items.length === 0){alert("No such repository exists");}
 			for (i = 0; i < reposjson.items.length; i++) {
 				$repoTable.append("<button class=listItem>" + reposjson.items[i].name +"</button>"+
-				                  "<div class=dropDownMenu id='" + i + "' >"+
+				                  "<div class=dropDownMenu>"+
 						  "<p><b>" + "Description: </b>" + reposjson.items[i].description +"</p>" +
 				                  "<p><b>" + "Language: </b>"+ reposjson.items[i].language +"</p>" +
 				                  "<p><b>" + "Size: </b>" + reposjson.items[i].size +"KB</p>" +
@@ -79,25 +79,16 @@ $(function() {
 			$(".addFav").click(function(){
 				var $listItem = $(this).parent().prev();
 				var $itemInfo = $(this).parent();
-				if( $favBody.find($("#"+ $itemInfo.attr('id'))).attr('id')){
-					alert("Already Added");
-				}
-				else{
-					$favBody.append($listItem.clone(true, true));
-					$favBody.append($itemInfo.clone(true, true));
-					$("#favBody #"+ $itemInfo.attr('id')).toggle();
-					$("#favBody #"+ $itemInfo.attr('id') +" .addFav").remove();
-					$("#favBody #"+ $itemInfo.attr('id')).append("<button class=removeFav></button>");
-					$("#favBody .removeFav").addClass("far fa-trash-alt");
-				}
-				/*remove duplicates
-				var currIndex = $(".favTab").eq(i);
-				var matchText = currIndex.children("div").first().text();
-				$(this).nextAll().each(function(i, inItem) {
-				    if(matchText===$(this).children("div").first().text()) {
-					$(this).remove();
-				    }
-				});*/
+				//var $favItemID = $favBody.find($("#"+ $itemInfo.attr('id'))).attr('id');
+				//var $favItemName = $('#' + $favItemID).prev().text();
+				
+				$favBody.append($listItem.clone(true, true));
+				$favBody.append($itemInfo.clone(true, true).toggle());
+				$("#favBody .dropDownMenu .addFav").remove();
+				$("#favBody .dropDownMenu").append("<button class=removeFav></button>");
+				$("#favBody .removeFav").addClass("far fa-trash-alt");
+				$('#favBody button').removeDuplicates();
+				$('#favBody div').removeDuplicates();
 
 				$(".removeFav").click(function(){
 					$(this).parent().prev().remove();
@@ -124,3 +115,28 @@ $(function() {
   });
 
 });
+
+(function($) {
+  
+  $.fn.removeDuplicates = function() {
+	var $original = $([]);
+
+	this.each(function(i, el) {
+		var $el = $(el),
+			isDuplicate;
+
+		$original.each(function(i, orig) {
+			if (el.isEqualNode(orig)) {
+				isDuplicate = true;
+				$el.remove();
+			}
+		});
+
+		if (!isDuplicate) {
+			$original = $original.add($el);
+		}
+	});
+
+	return $original;
+  };
+}(jQuery));
