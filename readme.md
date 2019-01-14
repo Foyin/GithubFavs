@@ -17,6 +17,7 @@ To run use command `node index.js`
 
 ### Layout
 ![screenshot from 2019-01-07 10-56-24](https://user-images.githubusercontent.com/15314851/50777978-e89dcd80-126a-11e9-99e4-73e442d4791d.png)
-![screenshot from 2019-01-07 10-45-36](https://user-images.githubusercontent.com/15314851/50777856-a96f7c80-126a-11e9-9ece-e9bab150d1d4.png)
-![screenshot from 2019-01-07 10-52-55](https://user-images.githubusercontent.com/15314851/50777837-9e1c5100-126a-11e9-81d3-4027f4d8bc80.png)
+![screenshot from 2019-01-14 13-14-24](https://user-images.githubusercontent.com/15314851/51131968-181a8000-17ff-11e9-9f90-17aad11dc32f.png)
+![screenshot from 2019-01-14 13-15-02](https://user-images.githubusercontent.com/15314851/51131985-223c7e80-17ff-11e9-8c95-d822ea7fd202.png)
+![screenshot from 2019-01-14 13-19-13](https://user-images.githubusercontent.com/15314851/51131991-25d00580-17ff-11e9-987c-077c9c0e6a05.png)
 
