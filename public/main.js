@@ -84,13 +84,16 @@ $(function() {
 				
 				$favBody.append($listItem.clone(true, true));
 				$favBody.append($itemInfo.clone(true, true).toggle());
-				$("#favBody .dropDownMenu .addFav").remove();
-				$("#favBody .dropDownMenu").append("<button class=removeFav></button>");
-				$("#favBody .removeFav").addClass("far fa-trash-alt");
-				$('#favBody button').removeDuplicates();
-				$('#favBody div').removeDuplicates();
+				//$("#favBody .dropDownMenu .addFav").remove();
+				//$("#favBody .dropDownMenu").append("<a class=removeFav></a>");
+				$("#favBody .addFav .tooltiptext").remove();
+				$("#favBody .addFav").removeClass("fas fa-star");
+				$("#favBody .addFav").addClass("far fa-trash-alt");
+				$('#favBody .addFav').css('color', 'red');
+				$('#favBody .listItem').removeDuplicates();
+				$('#favBody .dropDownMenu').removeDuplicates();
 
-				$(".removeFav").click(function(){
+				$("#favBody .addFav").click(function(){
 					$(this).parent().prev().remove();
 					$(this).parent().remove();
 				});
